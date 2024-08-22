@@ -52,6 +52,10 @@ def calc_return_level():
     ReturnLevel = input(
         "Do you want to try for higher returns compared to if you'd left your money in cash, despite the risks involved? (Strong Yes/Yes/No/Strong No): ")
 
+    if ReturnLevel not in ["Strong Yes", "Strong No", "Yes", "No"]:
+        raise ValueError(
+            "Input must be 'Strong Yes', 'Yes', 'No' or 'Strong No'")
+
     if ReturnLevel == "Yes":
         return 3
     elif ReturnLevel == "Strong Yes":
@@ -96,15 +100,6 @@ TermLengthn = 0
 Easetousen = 0
 Feesn = 0
 
-# Manually encoding parameters so that they can be used in the decision tree
-if RiskLevel in [8, 9, 7]:
-    RiskLeveln = 3
-elif RiskLevel in [6, 5]:
-    RiskLeveln = 2
-elif RiskLevel in [4, 3]:
-    RiskLeveln = 1
-elif RiskLevel in [2, 1]:
-    RiskLeveln = 0
 
 if ReturnLevel == "Yes":
     ReturnLeveln = 3

@@ -4,27 +4,37 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn import tree
 
 
+def get_yes_no_input(prompt):
+    """Helper function to get a valid 'Yes' or 'No' input from the user."""
+    while True:
+        answer = input(prompt).strip().lower()
+        if answer in ["yes", "no"]:
+            return answer
+        else:
+            print("Invalid input. Please enter 'Yes' or 'No'.")
+
+
 def calc_risk_level():
     """Calculate's the risk level of a user based on their answer to the psychological questionnaire"""
     RiskLevel = 0
 
-    psych_1 = input(
+    psych_1 = get_yes_no_input(
         "Would you panic if your investment fell in value every now and then? (Yes/No): ")
-    psych_2 = input(
+    psych_2 = get_yes_no_input(
         "Can you resist the urge to panic and sell your investment if it falls below what you paid for it? (Yes/No): ")
-    psych_3 = input(
+    psych_3 = get_yes_no_input(
         "Do you invest without thoroughly analyzing your options? (Yes/No): ")
-    psych_4 = input(
+    psych_4 = get_yes_no_input(
         "Are you quick to make investment decisions without careful consideration? (Yes/No): ")
-    psych_5 = input(
+    psych_5 = get_yes_no_input(
         "Do you frequently have rapid and disorganized thoughts about your investment choices? (Yes/No): ")
-    psych_6 = input(
+    psych_6 = get_yes_no_input(
         "Do you plan and prepare for investment opportunities well in advance? (Yes/No): ")
-    psych_7 = input(
+    psych_7 = get_yes_no_input(
         "Are you disciplined and self-controlled in your investment decisions? (Yes/No): ")
-    psych_8 = input(
+    psych_8 = get_yes_no_input(
         "Can you easily focus and concentrate on managing your investments? (Yes/No): ")
-    psych_9 = input(
+    psych_9 = get_yes_no_input(
         "Do you consistently save and allocate resources for future investment needs? (Yes/No): ")
 
     for answer in [psych_1, psych_2, psych_3, psych_4, psych_5, psych_6, psych_7, psych_8, psych_9]:
@@ -55,7 +65,7 @@ def calc_return_level():
 
     while True:
         ReturnLevel = input(
-            "Do you want to try for higher returns compared to if you'd left your money in cash, despite the risks involved? (A: Strong Yes, B: Yes, C:No, D:Strong No): ")
+            "Do you want to try for higher returns compared to if you'd left your money in cash, despite the risks involved? (A: Strong Yes, B: Yes, C: No, D: Strong No): ")
 
         if ReturnLevel in valid_options:
             if ReturnLevel == "Yes":
@@ -77,7 +87,7 @@ def calc_cap_and_fees():
 
     while True:
         answer = input(
-            "Choose your annual income range (A: Under £20,000, B: £20,000-£40,000, C: £40,000-£60,000, D:£60,000-£80,000, E: Above £80,000): ")
+            "Choose your annual income range (A: Under £20,000, B: £20,000-£40,000, C: £40,000-£60,000, D: £60,000-£80,000, E: Above £80,000): ")
 
         if answer in valid_options:
             if answer in ['A', 'B']:
@@ -101,9 +111,9 @@ def calc_term_length():
 
         if answer in valid_options:
             if answer in ['A', 'B']:
-                return 'ST'
+                return 0
             else:
-                return 'LT'
+                return 1
 
         else:
             print("Invalid input. Please choose from A, B, C, D or E.")
@@ -197,4 +207,4 @@ if __name__ == "__main__":
     encoded_df = encode_dataframe(df)
     decision_tree_output = decision_tree(encoded_df)
 
-    return decision_tree_output
+    print(decision_tree_output)

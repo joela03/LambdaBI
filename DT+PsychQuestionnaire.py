@@ -38,25 +38,47 @@ def calc_risk_level():
         if i.lower() == "yes":
             RiskLevel += 1
 
-    return RiskLevel
+    if RiskLevel in [8, 9, 7]:
+        return 3
+    elif RiskLevel in [6, 5]:
+        return 2
+    elif RiskLevel in [4, 3]:
+        return 1
+    elif RiskLevel in [2, 1]:
+        return 0
 
 
-# Calculating ReturnLevel
-ReturnLevel = input(
-    "Do you want to try for higher returns compared to if you'd left your money in cash, despite the risks involved? (Strong Yes/Yes/No/Strong No): ")
-# Calculating Fees and Cap
-Fees = []
-Cap = input("Choose your annual income range (Under £20,000/£20,000-£40,000/£40,000-£60,000/£60,000-£80,000/Above £80,000): ")
-if Cap in ['Under £20,000', '£20,000-£40,000']:
-    Cap = 'N/A'
-    Fees = 'N'
-else:
-    Cap = '20000'
-    Fees = 'Y'
+def calc_return_level():
+    ReturnLevel = input(
+        "Do you want to try for higher returns compared to if you'd left your money in cash, despite the risks involved? (Strong Yes/Yes/No/Strong No): ")
+
+    if ReturnLevel == "Yes":
+        return 3
+    elif ReturnLevel == "Strong Yes":
+        return 2
+    elif ReturnLevel == "Strong No":
+        return 1
+    else:
+        return 0
+
+
+def fees():
+    Fees = []
+    Cap = input(
+        "Choose your annual income range (Under £20,000/£20,000-£40,000/£40,000-£60,000/£60,000-£80,000/Above £80,000): ")
+    if Cap in ['Under £20,000', '£20,000-£40,000']:
+        Cap = 'N/A'
+        Fees = 'N'
+    else:
+        Cap = '20000'
+        Fees = 'Y'
+
+    return {"Cap": Cap, "Return_Level": ReturnLevel, "Fees": Fees}
+
 
 # Calculating TermLength
 TermLength = input(
-    "How long do you want to commit to this goal? (Less than 5 years/5-10 years/10-20 years/20-30 years/above 30 years): ")
+    "How long do you want to commit to this goal? (A: Less than 5 years, B: 5-10 years, C: 10-20 years D: 20-30 years, E: above 30 years): ")
 
 if TermLength in ['Less than 5 years', '5-10 years']:
     TermLength = 'LT'
@@ -167,4 +189,4 @@ prediction = model.predict(params)
 print(prediction)
 
 if __name__ == "__main__":
-    risk_level = psych_questionnaire()
+    RiskLeveln = calc_risk_level()

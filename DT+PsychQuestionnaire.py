@@ -5,7 +5,7 @@ from sklearn import tree
 
 
 def calc_risk_level():
-
+    """Calculate's the risk level of a user based on their answer to the psychological questionnaire"""
     RiskLevel = 0
 
     psych_1 = input(
@@ -66,18 +66,18 @@ def calc_return_level():
         return 0
 
 
-def fees():
+def calc_cap_and_fees():
     Fees = []
     Cap = input(
         "Choose your annual income range (Under £20,000/£20,000-£40,000/£40,000-£60,000/£60,000-£80,000/Above £80,000): ")
     if Cap in ['Under £20,000', '£20,000-£40,000']:
-        Cap = 'N/A'
-        Fees = 'N'
+        Cap = 1
+        Fees = 0
     else:
-        Cap = '20000'
-        Fees = 'Y'
+        Cap = 0
+        Fees = 1
 
-    return {"Cap": Cap, "Return_Level": ReturnLevel, "Fees": Fees}
+    return {"Cap": Cap, "Fees": Fees}
 
 
 # Calculating TermLength
@@ -185,3 +185,4 @@ print(prediction)
 
 if __name__ == "__main__":
     RiskLeveln = calc_risk_level()
+    ReturnLeveln = calc_return_level()

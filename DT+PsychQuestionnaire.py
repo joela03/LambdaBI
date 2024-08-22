@@ -28,7 +28,7 @@ def calc_risk_level():
         "Do you consistently save and allocate resources for future investment needs? (Yes/No): ")
 
     for answer in [psych_1, psych_2, psych_3, psych_4, psych_5, psych_6, psych_7, psych_8, psych_9]:
-        if answer not in ["Yes", "No", "yes", "no"]:
+        if answer.lower() not in ["yes", "no"]:
             raise ValueError("Input must be 'Yes' or 'No'")
 
     for i in [psych_1, psych_4, psych_5, psych_9]:
@@ -49,45 +49,65 @@ def calc_risk_level():
 
 
 def calc_return_level():
-    ReturnLevel = input(
-        "Do you want to try for higher returns compared to if you'd left your money in cash, despite the risks involved? (Strong Yes/Yes/No/Strong No): ")
+    """Calculate's the return level that the customer would prefer"""
 
-    if ReturnLevel not in ["Strong Yes", "Strong No", "Yes", "No"]:
-        raise ValueError(
-            "Input must be 'Strong Yes', 'Yes', 'No' or 'Strong No'")
+    valid_options = ["A", "B", "C", "D"]
 
-    if ReturnLevel == "Yes":
-        return 3
-    elif ReturnLevel == "Strong Yes":
-        return 2
-    elif ReturnLevel == "Strong No":
-        return 1
-    else:
-        return 0
+    while True:
+        ReturnLevel = input(
+            "Do you want to try for higher returns compared to if you'd left your money in cash, despite the risks involved? (A: Strong Yes, B: Yes, C:No, D:Strong No): ")
+
+        if ReturnLevel in valid_options:
+            if ReturnLevel == "Yes":
+                return 3
+            elif ReturnLevel == "Strong Yes":
+                return 2
+            elif ReturnLevel == "Strong No":
+                return 1
+            else:
+                return 0
+
+        else:
+            print("Invalid input. Please choose from A, B, C or D")
 
 
 def calc_cap_and_fees():
-    Fees = []
-    Cap = input(
-        "Choose your annual income range (Under £20,000/£20,000-£40,000/£40,000-£60,000/£60,000-£80,000/Above £80,000): ")
-    if Cap in ['Under £20,000', '£20,000-£40,000']:
-        Cap = 1
-        Fees = 0
-    else:
-        Cap = 0
-        Fees = 1
+    """Calculate's the cap and fees for the user"""
+    valid_options = ['A', 'B', 'C', 'D', 'E']
 
-    return {"Cap": Cap, "Fees": Fees}
+    while True:
+        answer = input(
+            "Choose your annual income range (A: Under £20,000, B: £20,000-£40,000, C: £40,000-£60,000, D:£60,000-£80,000, E: Above £80,000): ")
+
+        if answer in valid_options:
+            if answer in ['A', 'B']:
+                Cap = 1
+                Fees = 0
+            else:
+                Cap = 0
+                Fees = 1
+
+            return {"Cap": Cap, "Fees": Fees}
+        else:
+            print("Invalid input. Please choose A, B, C, D or E.")
 
 
-# Calculating TermLength
-TermLength = input(
-    "How long do you want to commit to this goal? (A: Less than 5 years, B: 5-10 years, C: 10-20 years D: 20-30 years, E: above 30 years): ")
+def term_length():
+    """Calculate's the preferred term length of a customer"""
+    valid_options = ['A', 'B', 'C', 'D', 'E']
+    while True:
+        answer = input(
+            "How long do you want to commit to this goal? (A: Less than 5 years, B: 5-10 years, C: 10-20 years D: 20-30 years, E: above 30 years): ")
 
-if TermLength in ['Less than 5 years', '5-10 years']:
-    TermLength = 'LT'
-else:
-    TermLength = 'ST'
+        if answer in valid_options:
+            if answer in ['A', 'B']:
+                return 'ST'
+            else:
+                return 'LT'
+
+        else:
+            print("Invalid input. Please choose from A, B, C, D or E.")
+
 
 # Calculating Easetouse
 Easetouse = input(
@@ -186,3 +206,6 @@ print(prediction)
 if __name__ == "__main__":
     RiskLeveln = calc_risk_level()
     ReturnLeveln = calc_return_level()
+    output = calc_cap_and_fees()
+    Feesn = output["Fees"]
+    Capn = output["Cap"]

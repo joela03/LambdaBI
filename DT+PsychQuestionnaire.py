@@ -92,7 +92,7 @@ def calc_cap_and_fees():
             print("Invalid input. Please choose A, B, C, D or E.")
 
 
-def term_length():
+def calc_term_length():
     """Calculate's the preferred term length of a customer"""
     valid_options = ['A', 'B', 'C', 'D', 'E']
     while True:
@@ -109,99 +109,81 @@ def term_length():
             print("Invalid input. Please choose from A, B, C, D or E.")
 
 
-# Calculating Easetouse
-Easetouse = input(
-    "How familiar are you with different investment options? (Not familiar/Somewhat familiar/Very familiar): ")
+def calc_ease_of_use():
+    """Calculate's the ease of use level for the customer"""
+    valid_options = ['A', 'B', 'C']
 
-RiskLeveln = 0
-ReturnLeveln = 0
-Capn = 0
-TermLengthn = 0
-Easetousen = 0
-Feesn = 0
+    while True:
+        answer = input(
+            "How familiar are you with different investment options? A: Not familiar, B: Somewhat familiar, C: Very familiar ")
 
+        if answer in valid_options:
+            if answer == "A":
+                return 0
+            elif answer == "B":
+                return 2
+            else:
+                return 1
 
-if ReturnLevel == "Yes":
-    ReturnLeveln = 3
-elif ReturnLevel == "Strong Yes":
-    ReturnLeveln = 2
-elif ReturnLevel == "Strong No":
-    ReturnLeveln = 1
-else:
-    ReturnLeveln = 0
-
-if Cap == "N/A":
-    Capn = 1
-else:
-    Capn = 0
-
-if Easetouse == "Not familiar":
-    Easetousen = 0
-elif Easetouse == "Somewhat familiar":
-    Easetousen = 2
-else:
-    Easetousen = 1
-
-if Fees == "Y":
-    Feesn = 1
-else:
-    Feesn = 0
+        else:
+            print("Invalid input. Please choose from A, B or C")
 
 
-# Visually dispalying paramaters to check
-print("RiskLevel:", RiskLevel)
-print("ReturnLevel:", ReturnLevel)
-print("Cap:", Cap)
-print("TermLength:", TermLength)
-print("Easetouse:", Easetouse)
-print("Fees:", Fees)
+def create_dataframe():
+    """Create's a dataframe that we can use for our decision tree"""
+
+    investment_options = [
+        ["Stocks and Shares", 8, None, None, "LT", "Not familiar", "Y"],
+        ["Bonds", 5, "Yes", None, "LT", "Somewhat familiar", "Y"],
+        ["Real Estate", 4, "Strong Yes", None, "LT", "Somewhat familiar", "Y"],
+        ["Savings Accounts", 2, "Strong No", None, "ST", "Very familiar", "N"],
+        ["ISAs", 2, "No", "£20,000", ["LT", "ST"], "Very familiar", "N"],
+        ["Pension Funds", 2, "Strong Yes", None, "LT", "Very familiar", "Y"],
+        ["Forex", 9, None, None, "ST", "Somewhat familiar", "Y"]
+    ]
+
+    columns = ['InvestmentOption', 'RiskLevel', 'ReturnLevel',
+               'Cap', 'TermLength', 'EaseToUse', 'Fees']
+
+    return pd.DataFrame(investment_options, columns=columns)
 
 
-# Research Team's table that has been manually inputted
-investment_options = [
-    ["Stocks and Shares", 8, None, None, "LT", "Not familiar", "Y"],
-    ["Bonds", 5, "Yes", None, "LT", "Somewhat familiar", "Y"],
-    ["Real Estate", 4, "Strong Yes", None, "LT", "Somewhat familiar", "Y"],
-    ["Savings Accounts", 2, "Strong No", None, "ST", "Very familiar", "N"],
-    ["ISAs", 2, "No", "£20,000", ["LT", "ST"], "Very familiar", "N"],
-    ["Pension Funds", 2, "Strong Yes", None, "LT", "Very familiar", "Y"],
-    ["Forex", 9, None, None, "ST", "Somewhat familiar", "Y"]
-]
+def encode_dataframe(df):
+    """Encoding dataframe values so we can implement the decision tree"""
 
-columns = ['InvestmentOption', 'RiskLevel', 'ReturnLevel',
-           'Cap', 'TermLength', 'EaseToUse', 'Fees']
+    le = LabelEncoder()
 
-# Converting table to dataframe so decision tree can manipulate it
-df = pd.DataFrame(investment_options, columns=columns)
+    # Encode categorical variables
+    df['RiskLevel_n'] = le.fit_transform(df['RiskLevel'])
+    df['ReturnLevel_n'] = le.fit_transform(df['ReturnLevel'])
+    df['Cap_n'] = le.fit_transform(df['Cap'])
 
-le = LabelEncoder()
+    # Flatten lists in the TermLength column and then encode
+    df['TermLength_n'] = df['TermLength'].apply(
+        lambda x: ', '.join(x) if isinstance(x, list) else x)
+    df['TermLength_n'] = le.fit_transform(df['TermLength_n'])
 
-# Encode categorical variables
-df['RiskLevel_n'] = le.fit_transform(df['RiskLevel'])
-df['ReturnLevel_n'] = le.fit_transform(df['ReturnLevel'])
-df['Cap_n'] = le.fit_transform(df['Cap'])
+    df['EaseToUse_n'] = le.fit_transform(df['EaseToUse'])
+    df['Fees_n'] = le.fit_transform(df['Fees'])
 
-# Flatten lists in the TermLength column and then encode
-df['TermLength_n'] = df['TermLength'].apply(
-    lambda x: ', '.join(x) if isinstance(x, list) else x)
-df['TermLength_n'] = le.fit_transform(df['TermLength_n'])
+    return df
 
-df['EaseToUse_n'] = le.fit_transform(df['EaseToUse'])
-df['Fees_n'] = le.fit_transform(df['Fees'])
 
-inputs_n = df.drop(['InvestmentOption', 'RiskLevel', 'ReturnLevel',
-                   'Cap', 'TermLength', 'EaseToUse', 'Fees'], axis=1)
+def decision_tree(df):
 
-target = df['InvestmentOption']
+    inputs_n = df.drop(['InvestmentOption', 'RiskLevel', 'ReturnLevel',
+                        'Cap', 'TermLength', 'EaseToUse', 'Fees'], axis=1)
 
-# Calling decision tree
-model = tree.DecisionTreeClassifier()
-model.fit(inputs_n, target)
+    target = df['InvestmentOption']
 
-params = [[RiskLeveln, ReturnLeveln, Capn, TermLengthn, Easetousen, Feesn]]
-prediction = model.predict(params)
+    model = tree.DecisionTreeClassifier()
+    model.fit(inputs_n, target)
 
-print(prediction)
+    params = [[RiskLeveln, ReturnLeveln, Capn, TermLengthn, Easetousen, Feesn]]
+    prediction = model.predict(params)
+
+    return prediction
+
 
 if __name__ == "__main__":
     RiskLeveln = calc_risk_level()
@@ -209,3 +191,10 @@ if __name__ == "__main__":
     output = calc_cap_and_fees()
     Feesn = output["Fees"]
     Capn = output["Cap"]
+    TermLengthn = calc_term_length()
+    Easetousen = calc_ease_of_use()
+    df = create_dataframe()
+    encoded_df = encode_dataframe(df)
+    decision_tree_output = decision_tree(encoded_df)
+
+    return decision_tree_output

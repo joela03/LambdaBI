@@ -1,3 +1,5 @@
+
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
@@ -10,8 +12,8 @@ def get_yes_no_input(prompt):
         answer = input(prompt).strip().lower()
         if answer in ["yes", "no"]:
             return answer
-        else:
-            print("Invalid input. Please enter 'Yes' or 'No'.")
+
+        print("Invalid input. Please enter 'Yes' or 'No'.")
 
 
 def calc_risk_level():
